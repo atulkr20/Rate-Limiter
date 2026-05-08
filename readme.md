@@ -170,3 +170,12 @@ rate-limiter-monorepo/
 - **Docker + docker-compose** — containerized deployment
 
 ---
+
+## Benchmark
+
+![Benchmark summary](./benchmark.png)
+
+This is a localhost Docker benchmark, not a production deployment but it stress-tests the core logic under real concurrency pressure
+
+Machine: Intel i5, 8GB RAM, Windows 11, Docker Desktop (local)
+
