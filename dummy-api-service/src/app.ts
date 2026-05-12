@@ -4,9 +4,17 @@
 
 import express from 'express'
 import { checkLimit } from './rateLimitClient'
+import path from 'path'
 
 const app = express()
 app.use(express.json())
+
+// Serve the static simulator UI at the root path in production builds
+const publicDir = path.join(__dirname, 'simulator')
+app.use(express.static(publicDir))
+app.get('/', (req, res) => {
+    res.sendFile(path.join(publicDir, 'index.html'))
+})
 
 // Enable CORS for the simulator
 app.use((req, res, next) => {

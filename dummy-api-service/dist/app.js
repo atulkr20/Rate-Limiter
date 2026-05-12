@@ -7,8 +7,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const rateLimitClient_1 = require("./rateLimitClient");
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+// Serve the static simulator UI at the root path in production builds
+const publicDir = path_1.default.join(__dirname, 'simulator');
+app.use(express_1.default.static(publicDir));
+app.get('/', (req, res) => {
+    res.sendFile(path_1.default.join(publicDir, 'index.html'));
+});
 // Enable CORS for the simulator
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
