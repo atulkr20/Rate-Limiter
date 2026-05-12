@@ -1,6 +1,4 @@
 
-version: "3.8"
-
 services:
 
   # Redis 
@@ -20,6 +18,7 @@ services:
 
   #  Rate Limiter Service 
   rate-limiter-service:
+    image: atulkr20/rate-limiter:latest
     build:
       context: ./rate-limiter-service    
       dockerfile: Dockerfile
@@ -39,6 +38,7 @@ services:
 
   # Dummy API Service 
   dummy-api-service:
+    image: atulkr20/dummy-api:latest
     build:
       context: ./dummy-api-service
       dockerfile: Dockerfile

@@ -92,4 +92,21 @@ describe("sliding_window Lua script", () => {
         expect(allowedB).toBe(1);
         expect(remainingB).toBe(LIMIT - 1);
     });
+    // concurrency tests
+    // This test id for race condition safety
+    describe("sliding_window Lua script Concurency", () => {
+        const KEY = "test:concurrent:user1:/api/data";
+        const WINDOW_MS = 60000;
+        const LIMIT = 10;
+        const NOW = Date.now();
+        it("should allow exactly LIMIT requests when fired in parallel", async () => {
+            const TOTAL_REQUESTS = 50;
+            // we will fire 50 requests all at the same time using Promise.all
+            const results = await Promise.all(Array.from({ length: TOTAL_REQUESTS }, (_, i) => callScript(KEY, NOW + i, WINDOW_MS, LIMIT)));
+            const allowed = results.filter(([a]) => a === 1).length;
+            const rejected = results.filter(([a]) => a === 0).length;
+            expect(allowed).toBe(LIMIT);
+            expect(rejected).toBe(TOTAL_REQUESTS - LIMIT);
+        });
+    });
 });
