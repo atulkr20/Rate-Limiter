@@ -40,8 +40,9 @@ services:
   dummy-api-service:
     image: atulkr20/dummy-api:latest
     build:
-      context: ./dummy-api-service
-      dockerfile: Dockerfile
+      
+      context: .
+      dockerfile: dummy-api-service/Dockerfile
     container_name: dummy-api-service
     ports:
       - "3102:3002"

@@ -3,10 +3,17 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+# copy only this service's package files (build context is repository root)
+COPY dummy-api-service/package*.json ./
 RUN npm install
 
-COPY . .
+# copy service source files
+COPY dummy-api-service/. ./
+
+# copy top-level simulator static files into the builder so we can include them in the final image
+COPY simulator ./simulator
+
+# compile TypeScript to JavaScript
 RUN npm run build
 
 
@@ -16,7 +23,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package*.json ./
+COPY dummy-api-service/package*.json ./
 RUN npm install --only=production
 
 COPY --from=builder /app/dist ./dist
