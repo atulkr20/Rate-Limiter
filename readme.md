@@ -9,7 +9,12 @@ A distributed rate limiting microservice built with Node.js, TypeScript, and Red
 | Service | Container Port | Host Port | Description |
 |---------|----------------|-----------|-------------|
 | rate-limiter-service | 3001 | 3101 | Core microservice — enforces rate limits |
-| dummy-api-service | 3002 | 3102 | Consumer service — calls rate limiter before responding |
+| dummy-api-service | 3002 | 3102 | Consumer service + simulator homepage |
+
+Production URLs when deployed behind Nginx:
+
+- `https://ratelimiter.itsatul.tech/` → simulator homepage
+- `https://ratelimiter.itsatul.tech/health` → rate limiter health proxy
 
 ---
 
@@ -58,12 +63,21 @@ Route-specific limits override plan limits:
 ### With Docker (recommended)
 
 ```bash
-git clone https://github.com/atulkr20/rate-limiter-monorepo
-cd rate-limiter-monorepo
-docker-compose up --build
+git clone https://github.com/atulkr20/Rate-Limiter.git
+cd Rate-Limiter
+docker compose up --build
 ```
 
 After the stack starts, use `http://localhost:3101` for the rate limiter and `http://localhost:3102` for the dummy API from your host machine.
+
+To build and push the deployable images:
+
+```bash
+docker compose build
+docker compose push
+```
+
+On the Droplet, the deployed compose stack should include both `rate-limiter-service` and `dummy-api-service`, and Nginx should proxy `ratelimiter.itsatul.tech` to `http://127.0.0.1:3102`.
 
 ### Without Docker
 
@@ -102,6 +116,8 @@ npm run dev
 | PORT | 3002 | Container port |
 | RATE_LIMITER_URL | http://rate-limiter-service:3001 | Rate limiter URL inside Docker |
 
+The simulator page auto-detects its API origin in production, so you do not need to manually edit the API URL after deployment.
+
 ---
 
 ## Failover Strategy
@@ -116,7 +132,7 @@ Configured via `FAILOVER_MODE` env variable.
 ## Folder Structure
 
 ```
-rate-limiter-monorepo/
+project-root/
 ├── readme.md
 ├── docker-compose.yml
 ├── simulator/
