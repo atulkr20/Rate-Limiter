@@ -79,23 +79,6 @@ docker compose push
 
 On the Droplet, the deployed compose stack should include both `rate-limiter-service` and `dummy-api-service`, and Nginx should proxy `ratelimiter.itsatul.tech` to `http://127.0.0.1:3102`.
 
-### Without Docker
-
-```bash
-# terminal 1 — Redis must be running locally
-redis-server
-
-# terminal 2
-cd rate-limiter-service
-npm install
-npm run dev
-
-# terminal 3
-cd dummy-api-service
-npm install
-npm run dev
-```
-
 ---
 
 ## Environment Variables
@@ -126,53 +109,6 @@ Configured via `FAILOVER_MODE` env variable.
 
 - `open` — Redis down → allow all requests. Use for non-critical endpoints where availability matters more than strict enforcement.
 - `closed` — Redis down → block all requests. Use for sensitive endpoints like OTP or payments where enforcement cannot be relaxed.
-
----
-
-## Folder Structure
-
-```
-project-root/
-├── readme.md
-├── docker-compose.yml
-├── simulator/
-│   └── index.html
-├── dummy-api-service/
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/
-│       ├── app.ts
-│       ├── rateLimitClient.ts
-│       ├── server.ts
-│       └── types.ts
-├── rate-limiter-service/
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/
-│       ├── app.ts
-│       ├── server.ts
-│       ├── config/
-│       │   └── index.ts
-│       ├── logger/
-│       │   └── index.ts
-│       ├── middleware/
-│       │   └── rateLimiter.ts
-│       ├── metrics/
-│       │   └── index.ts
-│       ├── redis/
-│       │   ├── client.ts
-│       │   └── luaScripts.ts
-│       ├── routes/
-│       │   └── check.ts
-│       ├── scripts/
-│       │   └── sliding_window.lua
-│       ├── services/
-│       │   └── rateLimiterService.ts
-│       └── types/
-│           └── index.ts
-```
 
 ---
 
