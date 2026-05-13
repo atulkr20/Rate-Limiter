@@ -34,13 +34,13 @@ export async function checkLimit(
             return err.response.data
         }
 
-        // rate limiter is unreachable - fail open
-         return {
-            allowed: true,
-            limit: 0,
-            remaining: -1,
-            resetAfter: 0,
-            reason: "Rate limiter unreachable"
-         }
+          // rate limiter is unreachable - fail closed so requests do not bypass policy
+            return {
+                allowed: false,
+                limit: 0,
+                remaining: 0,
+                resetAfter: 0,
+                reason: "Rate limiter unreachable"
+            }
     }
 }

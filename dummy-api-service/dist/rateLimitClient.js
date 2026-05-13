@@ -27,11 +27,11 @@ async function checkLimit(userId, ip, route, plan) {
             //  rate limiter responded with 429 -- properly blocked
             return err.response.data;
         }
-        // rate limiter is unreachable - fail open
+        // rate limiter is unreachable - fail closed so requests do not bypass policy
         return {
-            allowed: true,
+            allowed: false,
             limit: 0,
-            remaining: -1,
+            remaining: 0,
             resetAfter: 0,
             reason: "Rate limiter unreachable"
         };
