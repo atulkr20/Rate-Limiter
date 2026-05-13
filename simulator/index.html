@@ -36,7 +36,7 @@
   <div class="tb-gap"></div>
   <div class="ctrl">
     <label>API URL</label>
-    <input id="apiUrl" type="text" value="http://localhost:3102" placeholder="http://localhost:3102" aria-label="API URL"/>
+    <input id="apiUrl" type="text" value="" placeholder="Auto-detected from site origin" aria-label="API URL"/>
   </div>
   <div class="auto-row">
     <span class="auto-lbl">Auto:</span>
@@ -340,6 +340,19 @@ let seq        = 0;
 const NS = 'http://www.w3.org/2000/svg';
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep = ms => new Promise(r => setTimeout(r, REDUCED_MOTION ? 0 : ms));
+
+const DEFAULT_API_URL = (() => {
+  if (window.location && window.location.origin && window.location.origin !== 'null') {
+    return window.location.origin;
+  }
+
+  return '';
+})();
+
+const apiUrlInput = document.getElementById('apiUrl');
+if (apiUrlInput && !apiUrlInput.value) {
+  apiUrlInput.value = DEFAULT_API_URL;
+}
 
 // ══════════════════════════════════════════
 // SVG HELPER
@@ -737,7 +750,7 @@ async function sendRequest() {
   const userId = document.getElementById('userId').value || 'anonymous';
   const route  = document.getElementById('route').value;
   const plan   = document.getElementById('plan').value;
-  const apiUrl = document.getElementById('apiUrl').value || 'http://localhost:3102';
+  const apiUrl = document.getElementById('apiUrl').value || DEFAULT_API_URL;
   const cfg    = getCfg();
   const startedAt = performance.now();
 
